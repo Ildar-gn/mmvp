@@ -8,7 +8,6 @@ import { createGulpEsbuild } from 'gulp-esbuild';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
 import sharp from 'gulp-sharp-responsive';
 import svgo from 'gulp-svgmin';
-import { stacksvg } from 'gulp-stacksvg';
 import server from 'browser-sync';
 import bemlinter from 'gulp-html-bemlinter';
 
@@ -103,12 +102,6 @@ export function optimizeVector () {
     .pipe(dest(PATH_TO_SOURCE));
 }
 
-export function createStack () {
-  return src(`${PATH_TO_SOURCE}icons/**/*.svg`)
-    .pipe(stacksvg())
-    .pipe(dest(`${PATH_TO_DIST}icons`));
-}
-
 export function copyStatic () {
   return src(PATHS_TO_STATIC, { base: PATH_TO_SOURCE })
     .pipe(dest(PATH_TO_DIST));
@@ -140,9 +133,8 @@ export function startServer () {
   });
 
   watch(`${PATH_TO_SOURCE}**/*.{html,njk}`, series(processMarkup));
-  watch(`${PATH_TO_SOURCE}styles/**/*.scss`, series(processStyles));
+  watch(`${PATH_TO_SOURCE}**/*.{scss,svg}`, series(processStyles));
   watch(`${PATH_TO_SOURCE}scripts/**/*.js`, series(processScripts));
-  watch(`${PATH_TO_SOURCE}icons/**/*.svg`, series(createStack, reloadServer));
   watch(PATHS_TO_STATIC, series(reloadServer));
 }
 
@@ -167,7 +159,6 @@ export function buildProd (done) {
       processMarkup,
       processStyles,
       processScripts,
-      createStack,
       copyStatic,
     ),
   )(done);
@@ -180,7 +171,6 @@ export function runDev (done) {
       processMarkup,
       processStyles,
       processScripts,
-      createStack,
     ),
     startServer,
   )(done);

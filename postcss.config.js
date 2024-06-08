@@ -11,16 +11,12 @@ export default function (context) {
       },
       'postcss-url': [
         {
-          filter: '**/*',
-          url: 'rebase',
+          filter: '**/*.svg',
+          url: 'inline',
         },
         {
-          filter: '**/icons/**/*.svg',
-          url: (asset) => asset.url.replace(
-            /icons\/(.+?)\.svg$/,
-            (match, p1) => `icons/stack.svg#${p1.replace(/\//g, '_')}`,
-          ),
-          multi: true,
+          filter: '!**/*.svg',
+          url: 'rebase',
         },
       ],
       'postcss-custom-media': {},
